@@ -11,7 +11,7 @@ module Helpers
  def list_space(space_name: 'Reena\'s house',
     space_description: 'Lovely house with very nice garden',
 
-    space_price: '100', availability_start: "11-02-2015", availability_end: '15-02-2015')
+    space_price: '100', availability_start: '2015-02-11', availability_end: '2015-02-15')
 
    click_on 'List Space'
    fill_in :space_name,  with: space_name
@@ -22,7 +22,7 @@ module Helpers
    click_button 'List my Space'
  end
 
- def log_in(email: 'sam@yahoo.com', password: '123')
+ def log_in(email: 'sam@yahoo.com', password: 'password123')
    visit('/')
    click_button 'login'
    fill_in :email,  with: email

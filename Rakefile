@@ -1,16 +1,11 @@
-require 'data_mapper'
-require_relative './app/app'
+require 'sequel'
+require_relative 'app/models/connection'
+Sequel.extension :migration
 
 namespace :db do
-  desc "harmless upgrade"
-  task :auto_upgrade do
-    DataMapper.auto_upgrade!
-    puts 'Auto-upgrade complete - data was not lost'
+  desc 'Create missing tables without dropping or changing existing tables'
+  task :migrate do
+    Sequel::Migrator.run(DB, File.join(__dir__, 'db/migrations'))
   end
-
-  desc "harmful upgrade"
-  task :auto_migrate do
-    DataMapper.auto_migrate!
-    puts 'Auto-migrate complete - data was erased'
-  end
+  task auto_upgrade: :migrate
 end

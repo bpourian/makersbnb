@@ -3,7 +3,7 @@ feature 'Log in' do
   let!(:user) do
     User.create(username:  'sam_maker',
       email: 'sam@yahoo.com',
-       password: '123' )
+       password: 'password123' )
   end
 
   scenario 'User can log in' do
@@ -12,7 +12,7 @@ feature 'Log in' do
   end
 
   scenario 'User has error when given the wrong email or password' do
-    log_in(email: 'sam@yahoo.co.uk', password: '123')
+    log_in(email: 'sam@yahoo.co.uk', password: 'password123')
     expect(page).to have_content("The email or password is incorrect")
   end
 

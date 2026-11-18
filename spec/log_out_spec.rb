@@ -2,7 +2,7 @@ feature 'log out' do
   before(:each) do
     User.create(username:  'sam_maker',
       email: 'sam@yahoo.com',
-       password: '123' )
+       password: 'password123' )
   end
 
   scenario 'users can sign out' do

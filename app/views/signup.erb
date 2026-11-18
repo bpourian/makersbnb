@@ -5,6 +5,7 @@
 
 
 <form action="/signup" method="post">
+<input type="hidden" name="csrf_token" value="<%= csrf_token %>">
     <br>
     <input type="text" name="username" placeholder="username" required><br><br>
     <input type="email" name="email" placeholder="email" required><br><br>

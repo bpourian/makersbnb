@@ -55,3 +55,13 @@ As a User
 So that I can review my booking request
 I want my space to remain listed
 ```
+
+## Security migration (November 2026)
+
+Use Ruby 3.2 or later and the committed Bundler lock. The unsupported DataMapper stack has been replaced by Sequel while preserving the existing `users` and `spaces` table and column names. Configure `DATABASE_URL`, then run `bundle exec rake db:migrate` before starting the app. The migration creates missing tables; it does not drop or alter existing tables. The old destructive `db:auto_migrate` task is removed; `db:auto_upgrade` aliases the safe migration task. Back up and review your existing PostgreSQL schema before deploying this ORM change.
+
+Production requires a `SESSION_SECRET` containing at least 64 random bytes and uses Secure/HttpOnly/SameSite cookies. Listing, selection and request routes require authentication. Mutating forms require a session CSRF token, listing ownership comes from the signed-in user, and all user-controlled template values are escaped. New passwords must contain 8–72 bytes; existing short-password bcrypt hashes remain usable for login.
+
+Run `bundle exec rspec` for the 16 unit/feature/security examples. Tests use an isolated in-memory SQLite database and roll back each example. The suite and the browser sign-in → listing → selection → request-preview flow passed on JRuby 10.1.3.0 (Ruby 4.0.9), with no browser console errors. Gems were checksum-verified and only pure Ruby or precompiled Java archives were installed; native extension scripts were not run. PostgreSQL integration and a production-data migration were not executed.
+
+The demo's request page is a preview. It does not persist or confirm bookings. The previous confirmation wording has been corrected.
