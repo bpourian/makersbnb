@@ -1,46 +1,15 @@
 ENV['RACK_ENV'] = 'test'
-
+ENV['DATABASE_URL'] = RUBY_ENGINE == 'jruby' ? 'jdbc:sqlite::memory:' : 'sqlite::memory:'
+require_relative '../app/models/connection'
+Sequel.extension :migration
+Sequel::Migrator.run(DB, File.expand_path('../db/migrations', __dir__))
 require 'capybara/rspec'
-require './app/app'
-require 'helpers/helpers'
-require 'simplecov'
-require 'database_cleaner'
-require 'database_cleaner'
-require './app/models/space'
-require './app/models/user'
-
-
-
+require_relative '../app/app'
+require_relative 'helpers/helpers'
 Capybara.app = MakersBnb
-
-RSpec.configure do |c|
- c.include Helpers
-end
-
 RSpec.configure do |config|
-
-  config.expect_with :rspec do |expectations|
-
-    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
-  end
-
-  config.mock_with :rspec do |mocks|
-
-    mocks.verify_partial_doubles = true
-  end
-  config.shared_context_metadata_behavior = :apply_to_host_groups
-end
-
-RSpec.configure do |config|
-
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
+  config.include Helpers
   config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
+    DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
   end
 end
